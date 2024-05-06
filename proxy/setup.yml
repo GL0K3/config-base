@@ -41,9 +41,9 @@
     - name: Append alias to run several commands using proxy
       lineinfile:
         path: '/home/{{ ansible_user }}/.bashrc'
-        line:
-        - 'alias proxy="proxychains"'
-        - 'alias v="proxy nvim"'
+        line: |
+          alias proxy="proxychains"
+          alias v="proxy nvim"
         create: yes
 
     - name: Start the service
