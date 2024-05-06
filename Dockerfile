@@ -26,14 +26,15 @@ RUN echo "1123" >> /home/ansibleuser/.vault_pass
 
 ENV ANSIBLE_VAULT_PASSWORD_FILE=/home/ansibleuser/.vault_pass
 
+RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/nvim/setup.yml
 
-
-
-#RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/nvim/setup.yml
-
-#RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/tmux/setup.yml
+RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/tmux/setup.yml
 
 RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/proxy/setup.yml
+
+RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/bash/setup.yml
+
+RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/fish/setup.yml
 
 # Set the default command or entrypoint, here we just idle so you can exec into the container
 CMD ["sleep", "infinity"]
