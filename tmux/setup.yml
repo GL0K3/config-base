@@ -1,0 +1,86 @@
+---
+- name: Install Tmux and set up configuration
+  hosts: localhost
+  connection: local
+  become: yes  # This will use sudo for tasks
+
+  tasks:
+    - name: Install Dependencies
+      package:
+        name:
+        - xclip
+        state: present
+
+    - name: Install Tmux
+      package:
+        name: tmux
+        state: present
+
+    - name: Check if TPM is already installed
+      stat:
+        path: "/home/{{ ansible_user }}/.tmux/plugins/tpm"
+      register: tpm_dir
+
+    - name: Install Tmux Plugin Manager if folder does not exist
+      git:
+        repo: 'https://github.com/tmux-plugins/tpm'
+        dest: '/home/{{ ansible_user }}/.tmux/plugins/tpm'
+        clone: yes
+        update: yes
+      when: not tpm_dir.stat.exists
+
+
+    - name: Clone Tmux configuration repository
+      git:
+        repo: 'https://github.com/GL0K3/config-base'
+        dest: '/tmp/config-base'
+        clone: yes
+        update: yes
+
+    - name: Ensure configuration directory exists
+      file:
+        path: '/home/{{ ansible_user }}/.tmux/'
+        state: directory
+
+    - name: Copy Tmux configuration content
+      copy:
+        src: '/tmp/config-base/tmux/tmux/'
+        dest: '/home/{{ ansible_user }}/.tmux/'
+        remote_src: yes
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+
+    - name: Create symlink for .tmux.conf
+      file:
+        src: '/home/{{ ansible_user }}/.tmux/tmux.conf'
+        dest: '/home/{{ ansible_user }}/.tmux.conf'
+        state: link
+        force: yes
+
+    - name: Ensure corrent recursive permissions set on .tmux
+      file:
+        path: '/home/{{ ansible_user }}/.tmux/'
+        recurse: yes
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+
+    - name: Add custom g.sh script
+      copy:
+        src: '/tmp/config-base/tmux/g.sh'
+        dest: '/home/{{ ansible_user }}/.g.sh'
+        remote_src: yes
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+
+    - name: Append alias to run g.sh as g command
+      lineinfile:
+        path: '/home/{{ ansible_user }}/.bashrc'
+        line: 'alias g=". /home/{{ ansible_user }}/.g.sh"'
+        create: yes
+
+  handlers:
+    - name: Restart Tmux
+      systemd:
+        name: tmux
+        state: restarted
+
