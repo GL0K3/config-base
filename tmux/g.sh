@@ -1,10 +1,10 @@
 #!/bin/bash
 
-PROJECT_PATH=$(find ~/Projects -mindepth 2 -maxdepth 2 -type d | fzf)
+PROJECT_PATH=$(find $HOME/Projects -mindepth 2 -maxdepth 2 -type d | fzf)
 
 # check if project path was selected
 if [ -z $PROJECT_PATH ]; then
-    PROJECT_PATH=/home/deck
+    PROJECT_PATH=$HOME
 fi
 
 

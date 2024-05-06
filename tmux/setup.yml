@@ -9,6 +9,7 @@
       package:
         name:
         - xclip
+        - fzf
         state: present
 
     - name: Install Tmux
@@ -64,19 +65,31 @@
         owner: '{{ ansible_user }}'
         group: '{{ ansible_user }}'
 
-    - name: Add custom g.sh script
+    - name: Add custom g.sh script as executable
       copy:
         src: '/tmp/config-base/tmux/g.sh'
         dest: '/home/{{ ansible_user }}/.g.sh'
         remote_src: yes
         owner: '{{ ansible_user }}'
         group: '{{ ansible_user }}'
+        executable: yes
 
     - name: Append alias to run g.sh as g command
       lineinfile:
         path: '/home/{{ ansible_user }}/.bashrc'
         line: 'alias g=". /home/{{ ansible_user }}/.g.sh"'
         create: yes
+
+    - name: Create Project folder in user dir
+      file:
+        path: '/home/{{ ansible_user }}/Projects'
+        state: directory
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+
+    - name: Fix tmux server not running and install plugins
+      command: 'tmux new -d -s __noop >/dev/null 2>&1 || true && tmux set-environment -g TMUX_PLUGIN_MANAGER_PATH "~/.tmux/plugins" && /home/{{ ansible_user }}/.tmux/plugins/tpm/bin/install_plugins || true && tmux kill-session -t __noop >/dev/null 2>&1 || true'
+
 
   handlers:
     - name: Restart Tmux
