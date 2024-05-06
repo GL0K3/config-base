@@ -11,7 +11,10 @@
       package:
         name:
         - proxychains
+        - rust
         state: present
+    - name: Install cargo package sslocal
+      command: cargo install shadowsocks-rust
 
     - name: Copy proxychains config
       copy:
