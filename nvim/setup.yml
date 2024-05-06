@@ -1,12 +1,26 @@
 ---
 - name: Install NeoVim and set up configuration
-  hosts: all
+  hosts: localhost
+  connection: local
   become: yes  # This will use sudo for tasks
 
   tasks:
+    - name: Install Dependencies
+      package:
+        name:
+        - gcc
+        - make
+        - zig
+        - npm
+        - go
+        - unzip
+        - ripgrep
+        - xclip
+        state: present
+
     - name: Install NeoVim
       package:
-        name: nvim
+        name: neovim
         state: present
 
     - name: Clone NeoVim configuration repository
@@ -18,15 +32,21 @@
 
     - name: Ensure configuration directory exists
       file:
-        path: '/home/{{ ansible_user }}/config/nvim'
+        path: '/home/{{ ansible_user }}/.config/'
         state: directory
-        mode: '0755'
 
     - name: Copy NeoVim configuration to the user's directory
       copy:
         src: '/tmp/config-base/nvim'
-        dest: '/home/{{ ansible_user }}/config/nvim'
+        dest: '/home/{{ ansible_user }}/.config/'
         remote_src: yes
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+
+    - name: Ensure corrent recursive permissions set on .config
+      file:
+        path: '/home/{{ ansible_user }}/.config/'
+        recurse: yes
         owner: '{{ ansible_user }}'
         group: '{{ ansible_user }}'
 
