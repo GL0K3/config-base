@@ -1,0 +1,17 @@
+[Unit]
+Description=sslocal service
+After=network.target
+
+[Service]
+ExecStart=/home/deck/.cargo/bin/sslocal -c /etc/ssconfig.json
+ExecStop=/usr/bin/killall sslocal
+Restart=always
+RestartSec=10                       # Restart service after 10 seconds if service crashes
+StandardOutput=syslog               # Output to syslog
+StandardError=syslog                # Output to syslog
+SyslogIdentifier=sslocal
+User=deck
+
+[Install]
+WantedBy=multi-user.target
+
