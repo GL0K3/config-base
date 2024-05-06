@@ -1,0 +1,3 @@
+alias pcurl='proxychains curl'
+alias pv='proxychains nvim'
+alial v='proxychains nvim'

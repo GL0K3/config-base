@@ -1,5 +1,2 @@
-alias pcurl='proxychains curl'
-alias nvim='proxychains nvim'
-alias g='~/.g.sh'
 alias copy='xclip -selection clipboard'
 alias paste='xclip -selection clipboard -o'
