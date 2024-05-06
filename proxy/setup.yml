@@ -13,6 +13,11 @@
         - proxychains
         state: present
 
+    - name: Copy proxychains config
+      copy:
+        src: files/proxychains.conf
+        dest: /etc/proxychains.conf
+
     - name: Create config file for proxy service
       template:
         src: ssconfig.json
