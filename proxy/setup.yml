@@ -2,7 +2,9 @@
 - name: Install Proxy and set up configuration
   hosts: localhost
   connection: local
-  become: yes  # This will use sudo for tasks
+  become: yes
+  vars_files:
+    - secret.yml
 
   tasks:
     - name: Install Dependencies
@@ -10,3 +12,43 @@
         name:
         - proxychains
         state: present
+
+    - name: Create config file for proxy service
+      template:
+        src: ssconfig.json
+        dest: /etc/ssconfig.json
+
+    - name: Add service file to services 1
+      template:
+        src: sslocal.service
+        dest: /etc/systemd/system/sslocal.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Add service file to services 2
+      template:
+        src: sslocal.service
+        dest: /lib/systemd/system/sslocal.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload Daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: Append alias to run several commands using proxy
+      lineinfile:
+        path: '/home/{{ ansible_user }}/.bashrc'
+        line:
+        - 'alias proxy="proxychains"'
+        - 'alias v="proxy nvim"'
+        create: yes
+
+    - name: Start the service
+      service:
+        name: sslocal
+        state: started
+        enabled: yes
+      ignore_errors: yes

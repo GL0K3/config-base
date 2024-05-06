@@ -3,7 +3,7 @@ Description=sslocal service
 After=network.target
 
 [Service]
-ExecStart=/home/deck/.cargo/bin/sslocal -c /etc/ssconfig.json
+ExecStart=/home/{{ ansible_user }}/.cargo/bin/sslocal -c /etc/ssconfig.json
 ExecStop=/usr/bin/killall sslocal
 Restart=always
 RestartSec=10                       # Restart service after 10 seconds if service crashes

@@ -1,0 +1,8 @@
+{
+    "server": "{{ proxy_server }}",
+    "server_port": {{ proxy_server_port }},
+    "password": "{{ proxy_password }}",
+    "method": "2022-blake3-aes-256-gcm",
+    "local_address": "127.0.0.1",
+    "local_port": 1080
+}

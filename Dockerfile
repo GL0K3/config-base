@@ -21,10 +21,19 @@ COPY . /home/ansibleuser/config-base
 
 RUN sudo chown -R ansibleuser:ansibleuser /home/ansibleuser/config-base
 
+RUN mkdir -p /home/ansibleuser
+RUN echo "1123" >> /home/ansibleuser/.vault_pass
 
-RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/nvim/setup.yml
+ENV ANSIBLE_VAULT_PASSWORD_FILE=/home/ansibleuser/.vault_pass
 
-RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/tmux/setup.yml
+
+
+
+#RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/nvim/setup.yml
+
+#RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/tmux/setup.yml
+
+RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/proxy/setup.yml
 
 # Set the default command or entrypoint, here we just idle so you can exec into the container
 CMD ["sleep", "infinity"]

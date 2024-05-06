@@ -1,9 +1,0 @@
-{
-    "server": "IP",
-    "server_port": 0,
-    "password": "user and password encoded",
-    "method": "2022-blake3-aes-256-gcm",
-    "local_address": "127.0.0.1",
-    "local_port": 1080
-}
-
