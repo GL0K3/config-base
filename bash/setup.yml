@@ -5,6 +5,9 @@
   become_user: '{{ ansible_user }}'
 
   tasks:
+    - name: Install oh-my-bash
+      command: bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+
     - name: Append alias to run g.sh as g command
       lineinfile:
         path: '/home/{{ ansible_user }}/.bashrc'
