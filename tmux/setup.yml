@@ -2,29 +2,31 @@
 - name: Install Tmux and set up configuration
   hosts: localhost
   connection: local
+  become_user: '{{ ansible_user }}'
 
   tasks:
-    - name: Install Dependencies
+    - name: Install Dependencies and Tmux
       become: yes
+      become_user: root
       package:
         name:
         - xclip
         - fzf
         - bottom
+        - tmux
         state: present
 
-    - name: Install Tmux
-      become: yes
-      package:
-        name: tmux
-        state: present
+    - name: Ensure configuration directory exists
+      file:
+        path: '/home/{{ ansible_user }}/.tmux/'
+        state: directory
 
     - name: Check if TPM is already installed
       stat:
         path: "/home/{{ ansible_user }}/.tmux/plugins/tpm"
       register: tpm_dir
 
-    - name: Install Tmux Plugin Manager if folder does not exist
+    - name: Install Tmux Plugin Manager if needed
       git:
         repo: 'https://github.com/tmux-plugins/tpm'
         dest: '/home/{{ ansible_user }}/.tmux/plugins/tpm'
@@ -32,18 +34,12 @@
         update: yes
       when: not tpm_dir.stat.exists
 
-
     - name: Clone Tmux configuration repository
       git:
         repo: 'https://github.com/GL0K3/config-base'
         dest: '/home/{{ ansible_user }}/tmp/config-base'
         clone: yes
         update: yes
-
-    - name: Ensure configuration directory exists
-      file:
-        path: '/home/{{ ansible_user }}/.tmux/'
-        state: directory
 
     - name: Copy Tmux configuration content
       copy:
@@ -58,6 +54,8 @@
         src: '/home/{{ ansible_user }}/.tmux/tmux.conf'
         dest: '/home/{{ ansible_user }}/.tmux.conf'
         state: link
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
         force: yes
 
     - name: Ensure corrent recursive permissions set on .tmux
@@ -69,7 +67,7 @@
 
     - name: Add custom g.sh script as executable
       copy:
-        src: '/tmp/config-base/tmux/g.sh'
+        src: '/home/{{ ansible_user }}/tmp/config-base/tmux/g.sh'
         dest: '/home/{{ ansible_user }}/.g.sh'
         remote_src: yes
         owner: '{{ ansible_user }}'
@@ -82,20 +80,21 @@
         line: 'alias g=". /home/{{ ansible_user }}/.g.sh"'
         create: yes
 
-    - name: Create Project folder in user dir
+    - name: Create Project folder in user dirrectory for g.sh
       file:
         path: '/home/{{ ansible_user }}/Projects'
         state: directory
         owner: '{{ ansible_user }}'
         group: '{{ ansible_user }}'
 
-    - name: Fix tmux server not running and install plugins
-      command: 'tmux new -d -s __noop >/dev/null 2>&1 || true && tmux set-environment -g TMUX_PLUGIN_MANAGER_PATH "~/.tmux/plugins" && /home/{{ ansible_user }}/.tmux/plugins/tpm/bin/install_plugins || true && tmux kill-session -t __noop >/dev/null 2>&1 || true'
+    - name: Download plugins
+      become_user: '{{ ansible_user }}'
+      command: |
+        /home/{{ ansible_user }}/.tmux/plugins/tpm/bin/install_plugins
 
-
-  handlers:
-    - name: Restart Tmux
-      systemd:
-        name: tmux
-        state: restarted
-
+    - name: Remove tmux-1000
+      become: yes
+      become_user: root
+      file:
+        path: '/tmp/tmux-1000/'
+        state: absent

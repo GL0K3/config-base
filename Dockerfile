@@ -22,7 +22,7 @@ COPY . /home/ansibleuser/config-base
 RUN sudo chown -R ansibleuser:ansibleuser /home/ansibleuser/config-base
 
 
-#RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/nvim/setup.yml
+RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/nvim/setup.yml
 
 RUN ansible-playbook -e ansible_user=$(whoami) /home/ansibleuser/config-base/tmux/setup.yml
 

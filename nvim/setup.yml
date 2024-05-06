@@ -2,10 +2,12 @@
 - name: Install NeoVim and set up configuration
   hosts: localhost
   connection: local
-  become: yes  # This will use sudo for tasks
+  become_user: '{{ ansible_user }}'
 
   tasks:
     - name: Install Dependencies
+      become: yes
+      become_user: root
       package:
         name:
         - gcc
@@ -16,17 +18,13 @@
         - unzip
         - ripgrep
         - xclip
-        state: present
-
-    - name: Install NeoVim
-      package:
-        name: neovim
+        - neovim
         state: present
 
     - name: Clone NeoVim configuration repository
       git:
         repo: 'https://github.com/GL0K3/config-base'
-        dest: '/tmp/config-base'
+        dest: '/home/{{ ansible_user }}/tmp/config-base'
         clone: yes
         update: yes
 
@@ -37,9 +35,8 @@
 
     - name: Copy NeoVim configuration to the user's directory
       copy:
-        src: '/tmp/config-base/nvim'
+        src: '/home/{{ ansible_user }}/tmp/config-base/nvim'
         dest: '/home/{{ ansible_user }}/.config/'
-        remote_src: yes
         owner: '{{ ansible_user }}'
         group: '{{ ansible_user }}'
 
