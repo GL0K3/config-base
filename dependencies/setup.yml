@@ -1,0 +1,28 @@
+---
+- name: Install Dependencies
+  hosts: localhost
+  connection: local
+  become_user: '{{ ansible_user }}'
+
+  tasks:
+    - name: Install Additional Dependencies
+      become: yes
+      become_user: root
+      package:
+        name:
+        - rust
+        - go
+        - zig
+        - npm
+        - poetry
+        - pyenv
+
+        - bottom
+        - lazygit
+        - lazydocker
+        - fzf
+        - proxychains
+
+        - neovim
+        - tmux
+        state: present
