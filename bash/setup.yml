@@ -1,0 +1,14 @@
+---
+- name: Install Tmux and set up configuration
+  hosts: localhost
+  connection: local
+  become_user: '{{ ansible_user }}'
+
+  tasks:
+    - name: Append alias to run g.sh as g command
+      lineinfile:
+        path: '/home/{{ ansible_user }}/.bashrc'
+        line: |
+          alias copy='xclip -selection clipboard'
+          alias paste='xclip -selection clipboard -o'
+        create: yes

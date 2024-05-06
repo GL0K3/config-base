@@ -1,9 +1,0 @@
-
-alias purl='proxychains curl'
-alias nvim='proxychains nvim'
-alias g='~/.g.sh'
-
-if status is-interactive
-    g
-end
-

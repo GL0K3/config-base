@@ -1,0 +1,26 @@
+---
+- name: Install Tmux and set up configuration
+  hosts: localhost
+  connection: local
+  become_user: '{{ ansible_user }}'
+
+  tasks:
+    - name: Install fish
+      become: yes
+      become_user: root
+      package:
+        name: fish
+        state: present
+
+    - name: Append alias to fish config
+      lineinfile:
+        path: '/home/{{ ansible_user }}/.config/fish/config.fish'
+        line: |
+          alias purl='proxychains curl'
+          alias nvim='proxychains nvim'
+          alias g='~/.g.sh'
+          if status is-interactive
+              g
+          end
+
+        create: yes
