@@ -2,17 +2,19 @@
 - name: Install Tmux and set up configuration
   hosts: localhost
   connection: local
-  become: yes  # This will use sudo for tasks
 
   tasks:
     - name: Install Dependencies
+      become: yes
       package:
         name:
         - xclip
         - fzf
+        - bottom
         state: present
 
     - name: Install Tmux
+      become: yes
       package:
         name: tmux
         state: present
@@ -34,7 +36,7 @@
     - name: Clone Tmux configuration repository
       git:
         repo: 'https://github.com/GL0K3/config-base'
-        dest: '/tmp/config-base'
+        dest: '/home/{{ ansible_user }}/tmp/config-base'
         clone: yes
         update: yes
 
@@ -45,7 +47,7 @@
 
     - name: Copy Tmux configuration content
       copy:
-        src: '/tmp/config-base/tmux/tmux/'
+        src: '/home/{{ ansible_user }}/tmp/config-base/tmux/tmux/'
         dest: '/home/{{ ansible_user }}/.tmux/'
         remote_src: yes
         owner: '{{ ansible_user }}'

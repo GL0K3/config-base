@@ -1,0 +1,12 @@
+---
+- name: Install Proxy and set up configuration
+  hosts: localhost
+  connection: local
+  become: yes  # This will use sudo for tasks
+
+  tasks:
+    - name: Install Dependencies
+      package:
+        name:
+        - proxychains
+        state: present
