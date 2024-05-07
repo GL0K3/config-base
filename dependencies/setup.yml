@@ -19,9 +19,9 @@
 
         - bottom
         - lazygit
-        - lazydocker
         - fzf
         - proxychains
+        - k9s
 
         - neovim
         - tmux
