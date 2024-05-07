@@ -10,7 +10,7 @@ RestartSec=10                       # Restart service after 10 seconds if servic
 StandardOutput=syslog               # Output to syslog
 StandardError=syslog                # Output to syslog
 SyslogIdentifier=sslocal
-User=deck
+User={{ ansible_user }}
 
 [Install]
 WantedBy=multi-user.target
