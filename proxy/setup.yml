@@ -2,17 +2,19 @@
 - name: Install Proxy and set up configuration
   hosts: localhost
   connection: local
-  become: yes
   vars_files:
     - vault/proxy.yml
 
   tasks:
     - name: Install Dependencies
+      become_user: root
+      become: yes
       package:
         name:
         - proxychains
         - rust
         state: present
+
     - name: Install cargo package sslocal
       command: cargo install shadowsocks-rust
 
@@ -27,6 +29,8 @@
         dest: /etc/ssconfig.json
 
     - name: Add service file to services 1
+      become: yes
+      become_user: root
       template:
         src: sslocal.service
         dest: /etc/systemd/system/sslocal.service
@@ -35,6 +39,8 @@
         mode: '0644'
 
     - name: Add service file to services 2
+      become: yes
+      become_user: root
       template:
         src: sslocal.service
         dest: /lib/systemd/system/sslocal.service
