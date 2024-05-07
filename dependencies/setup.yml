@@ -17,6 +17,9 @@
         - poetry
         - pyenv
 
+        - docker
+        - docker-compose
+
         - bottom
         - lazygit
         - fzf
@@ -26,3 +29,15 @@
         - neovim
         - tmux
         state: present
+    - name: Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Ensure user is added to the Docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
