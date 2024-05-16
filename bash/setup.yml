@@ -15,3 +15,18 @@
           alias copy='xclip -selection clipboard'
           alias paste='xclip -selection clipboard -o'
         create: yes
+
+    - name: Add custom s.sh script as executable
+      copy:
+        src: '/home/{{ ansible_user }}/tmp/config-base/bash/s.sh'
+        dest: '/home/{{ ansible_user }}/.s.sh'
+        remote_src: yes
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+        mode: '0755'
+
+    - name: Append alias to run s.sh as s command
+      lineinfile:
+        path: '/home/{{ ansible_user }}/.bashrc'
+        line: 'alias s="~/.s.sh"'
+        create: yes
