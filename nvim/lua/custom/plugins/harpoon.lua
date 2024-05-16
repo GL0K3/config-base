@@ -27,7 +27,7 @@ return {
     end
 
     vim.keymap.set('n', '<leader>pa', function()
-      harpoon:list():append()
+      harpoon:list():add()
     end, { desc = 'Harpoon: add current file' })
 
     vim.keymap.set('n', '<leader>pd', function()
