@@ -56,7 +56,7 @@
       lineinfile:
         path: '/home/{{ ansible_user }}/.bashrc'
         line: |
-          alias proxy="proxychains"
+          alias proxy="proxychains -q"
           alias v="proxy nvim"
         create: yes
 
